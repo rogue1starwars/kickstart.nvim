@@ -787,7 +787,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight-moon'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -838,7 +838,26 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'javascript',
+        'typescript',
+        'tsx',
+        'yaml',
+        'css',
+        'json',
+        'svelte',
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -882,6 +901,36 @@ require('lazy').setup({
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  {
+    'windwp/nvim-autopairs',
+    event = { 'InsertEnter' },
+    dependencies = {
+      'hrsh7th/nvim-cmp',
+    },
+    config = function()
+      -- import nvim-autopairs
+      local autopairs = require 'nvim-autopairs'
+
+      -- configure autopairs
+      autopairs.setup {
+        check_ts = true, -- enable treesitter
+        ts_config = {
+          lua = { 'string' }, -- don't add pairs in lua string treesitter nodes
+          javascript = { 'template_string' }, -- don't add pairs in javscript template_string treesitter nodes
+          java = false, -- don't check treesitter on java
+        },
+      }
+
+      -- import nvim-autopairs completion functionality
+      local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
+
+      -- import nvim-cmp plugin (completions plugin)
+      local cmp = require 'cmp'
+
+      -- make autopairs and completion work together
+      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
+    end,
+  },
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
