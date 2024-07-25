@@ -1092,10 +1092,6 @@ require('lazy').setup {
 
     config = function()
       vim.keymap.set('n', '<leader>gs', '<cmd>Git<CR>', { desc = 'Open git status' })
-      vim.keymap.set('n', '<leader>ga', '<cmd>Git add -A<CR>', { desc = 'Open git status' })
-      vim.keymap.set('n', '<leader>gc', '<cmd>Git commit<CR>', { desc = 'Open git commit' })
-      vim.keymap.set('n', '<leader>gp', '<cmd>Git push<CR>', { desc = 'Open git push' })
-      vim.keymap.set('n', '<leader>gl', '<cmd>Git log<CR>', { desc = 'Open git log' })
     end,
   },
 
