@@ -128,7 +128,7 @@ if vim.fn.has("wsl") == 1 then
       },
       paste = {
         ["+"] = (function()
-          return vim.fn.systemlist('wl-paste --no-newline|sed -e "s/\r$//"', { '' }, 1)         -- '1' keeps empty lines
+          return vim.fn.systemlist('wl-paste --no-newline|sed -e "s/\r$//"', { '' }, 1) -- '1' keeps empty lines
         end),
         ["*"] = (function()
           return vim.fn.systemlist('wl-paste --primary --no-newline|sed -e "s/\r$//"', { '' }, 1)
@@ -639,8 +639,8 @@ require('lazy').setup {
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua',   -- Used to format Lua code
         'prettier', -- Used to format JavaScript, TypeScript, etc.
+        'stylua',   -- Used to format Lua code
         'isort',    -- Used to format Python code
         'black',    -- Used to format Python code
         'pylint',   -- Used to lint Python code
@@ -973,24 +973,6 @@ require('lazy').setup {
     end,
   },
 
-  {
-    'github/copilot.vim',
-    lazy = false,
-  },
-
-  {
-    'CopilotC-Nvim/CopilotChat.nvim',
-    branch = 'canary',
-    dependencies = {
-      { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
-      { 'nvim-lua/plenary.nvim' },  -- for curl, log wrapper
-    },
-    opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
-    },
-    -- See Commands section for default commands if you want to lazy load on them
-  },
 
   -- Add nvim tree file explorer
   {
@@ -1033,7 +1015,8 @@ require('lazy').setup {
       }
 
       -- set keymaps
-      local keymap = vim.keymap                                                                                           -- for conciseness
+      local keymap = vim
+          .keymap                                                                                                         -- for conciseness
 
       keymap.set('n', '<leader>ee', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })                         -- toggle file explorer
       keymap.set('n', '<leader>ef', '<cmd>NvimTreeFindFileToggle<CR>', { desc = 'Toggle file explorer on current file' }) -- toggle file explorer on current file
@@ -1117,6 +1100,25 @@ require('lazy').setup {
     config = function()
       vim.keymap.set('n', '<leader>gs', '<cmd>Git<CR>', { desc = 'Open git status' })
     end,
+  },
+
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    branch = 'canary',
+    dependencies = {
+      { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
+      { 'nvim-lua/plenary.nvim' },  -- for curl, log wrapper
+    },
+    opts = {
+      debug = true, -- Enable debugging
+      -- See Configuration section for rest
+    },
+    -- See Commands section for default commands if you want to lazy load on them
+  },
+
+  {
+    "github/copilot.vim",
+    lazy = false,
   },
 
   ui = {
