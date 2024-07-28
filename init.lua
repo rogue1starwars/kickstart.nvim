@@ -100,12 +100,22 @@ vim.g.have_nerd_font = false
 
 -- Make line numbers default
 vim.opt.number = true
+vim.opt.relativenumber = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
+
+-- tabs & indentation
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.autoindent = true
+
+-- line wrapping
+vim.opt.wrap = false
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -116,25 +126,25 @@ vim.opt.showmode = false
 vim.opt.clipboard = 'unnamedplus'
 
 -- Add functionality to make pasting faster
-if vim.fn.has("wsl") == 1 then
-  if vim.fn.executable("wl-copy") == 0 then
-    print("wl-clipboard not found, clipboard integration won't work")
+if vim.fn.has 'wsl' == 1 then
+  if vim.fn.executable 'wl-copy' == 0 then
+    print "wl-clipboard not found, clipboard integration won't work"
   else
     vim.g.clipboard = {
-      name = "wl-clipboard (wsl)",
+      name = 'wl-clipboard (wsl)',
       copy = {
-        ["+"] = 'wl-copy --foreground --type text/plain',
-        ["*"] = 'wl-copy --foreground --primary --type text/plain',
+        ['+'] = 'wl-copy --foreground --type text/plain',
+        ['*'] = 'wl-copy --foreground --primary --type text/plain',
       },
       paste = {
-        ["+"] = (function()
-          return vim.fn.systemlist('wl-paste --no-newline|sed -e "s/\r$//"', { '' }, 1)         -- '1' keeps empty lines
-        end),
-        ["*"] = (function()
+        ['+'] = function()
+          return vim.fn.systemlist('wl-paste --no-newline|sed -e "s/\r$//"', { '' }, 1) -- '1' keeps empty lines
+        end,
+        ['*'] = function()
           return vim.fn.systemlist('wl-paste --primary --no-newline|sed -e "s/\r$//"', { '' }, 1)
-        end),
+        end,
       },
-      cache_enabled = true
+      cache_enabled = true,
     }
   end
 end
@@ -295,7 +305,7 @@ require('lazy').setup {
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  {                     -- Useful plugin to show you pending keybinds.
+  { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -343,7 +353,7 @@ require('lazy').setup {
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -441,7 +451,7 @@ require('lazy').setup {
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim',       opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
 
       -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
@@ -642,11 +652,11 @@ require('lazy').setup {
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua',   -- Used to format Lua code
+        'stylua', -- Used to format Lua code
         'prettier', -- Used to format JavaScript, TypeScript, etc.
-        'isort',    -- Used to format Python code
-        'black',    -- Used to format Python code
-        'pylint',   -- Used to lint Python code
+        'isort', -- Used to format Python code
+        'black', -- Used to format Python code
+        'pylint', -- Used to lint Python code
         'eslint_d', -- Used to lint JavaScript, TypeScript, etc.
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -957,11 +967,11 @@ require('lazy').setup {
 
       -- configure autopairs
       autopairs.setup {
-        check_ts = true,                      -- enable treesitter
+        check_ts = true, -- enable treesitter
         ts_config = {
-          lua = { 'string' },                 -- don't add pairs in lua string treesitter nodes
+          lua = { 'string' }, -- don't add pairs in lua string treesitter nodes
           javascript = { 'template_string' }, -- don't add pairs in javscript template_string treesitter nodes
-          java = false,                       -- don't check treesitter on java
+          java = false, -- don't check treesitter on java
         },
       }
 
@@ -976,6 +986,15 @@ require('lazy').setup {
     end,
   },
 
+  -- function CopilotChatBuffer()
+  --   local input = vim.fn.input("Quick Chat: ")
+  --   if input ~= "" then
+  --     require("CopilotChat").ask(input, { selection = require("CopilotChat.select").buffer })
+  --   end
+  -- end
+
+  -- -- <leader>ccq (Copilot Chat Quick) で Copilot とチャットする
+
   {
     'github/copilot.vim',
     lazy = false,
@@ -986,15 +1005,29 @@ require('lazy').setup {
     branch = 'canary',
     dependencies = {
       { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
-      { 'nvim-lua/plenary.nvim' },  -- for curl, log wrapper
+      { 'nvim-lua/plenary.nvim' }, -- for curl, log wrapper
     },
     opts = {
       debug = true, -- Enable debugging
       -- See Configuration section for rest
     },
     -- See Commands section for default commands if you want to lazy load on them
-  },
 
+    vim.keymap.set('n', '<leader>cco', function()
+      require('CopilotChat').open()
+    end, { desc = 'Open Copilot Chat' }),
+
+    vim.keymap.set('n', '<leader>ccx', function()
+      require('CopilotChat').close()
+    end, { desc = 'Close Copilot Chat' }),
+
+    vim.keymap.set('n', '<leader>ccq', function()
+      local input = vim.fn.input 'Quick Chat: '
+      if input ~= '' then
+        require('CopilotChat').ask(input, { selection = require('CopilotChat.select').buffer })
+      end
+    end, { desc = 'Toggle file explorer' }), -- toggle file explorer
+  },
   -- Add nvim tree file explorer
   {
     'nvim-tree/nvim-tree.lua',
@@ -1036,12 +1069,12 @@ require('lazy').setup {
       }
 
       -- set keymaps
-      local keymap = vim.keymap                                                                                           -- for conciseness
+      local keymap = vim.keymap -- for conciseness
 
-      keymap.set('n', '<leader>ee', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })                         -- toggle file explorer
+      keymap.set('n', '<leader>ee', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' }) -- toggle file explorer
       keymap.set('n', '<leader>ef', '<cmd>NvimTreeFindFileToggle<CR>', { desc = 'Toggle file explorer on current file' }) -- toggle file explorer on current file
-      keymap.set('n', '<leader>ec', '<cmd>NvimTreeCollapse<CR>', { desc = 'Collapse file explorer' })                     -- collapse file explorer
-      keymap.set('n', '<leader>er', '<cmd>NvimTreeRefresh<CR>', { desc = 'Refresh file explorer' })                       -- refresh file explorer
+      keymap.set('n', '<leader>ec', '<cmd>NvimTreeCollapse<CR>', { desc = 'Collapse file explorer' }) -- collapse file explorer
+      keymap.set('n', '<leader>er', '<cmd>NvimTreeRefresh<CR>', { desc = 'Refresh file explorer' }) -- refresh file explorer
     end,
   },
 
