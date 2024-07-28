@@ -100,10 +100,9 @@ vim.g.have_nerd_font = false
 
 -- Make line numbers default
 vim.opt.number = true
-vim.opt.relativenumber = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -652,11 +651,19 @@ require('lazy').setup {
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+<<<<<<< HEAD
         'stylua', -- Used to format Lua code
         'prettier', -- Used to format JavaScript, TypeScript, etc.
         'isort', -- Used to format Python code
         'black', -- Used to format Python code
         'pylint', -- Used to lint Python code
+=======
+        'prettier', -- Used to format JavaScript, TypeScript, etc.
+        'stylua',   -- Used to format Lua code
+        'isort',    -- Used to format Python code
+        'black',    -- Used to format Python code
+        'pylint',   -- Used to lint Python code
+>>>>>>> af7adfc2003f4b20a2342e213d75cfca8a91f9cd
         'eslint_d', -- Used to lint JavaScript, TypeScript, etc.
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -986,6 +993,7 @@ require('lazy').setup {
     end,
   },
 
+<<<<<<< HEAD
   -- function CopilotChatBuffer()
   --   local input = vim.fn.input("Quick Chat: ")
   --   if input ~= "" then
@@ -1012,6 +1020,8 @@ require('lazy').setup {
       -- See Configuration section for rest
     },
     -- See Commands section for default commands if you want to lazy load on them
+=======
+>>>>>>> af7adfc2003f4b20a2342e213d75cfca8a91f9cd
 
     vim.keymap.set('n', '<leader>cco', function()
       require('CopilotChat').open()
@@ -1069,7 +1079,12 @@ require('lazy').setup {
       }
 
       -- set keymaps
+<<<<<<< HEAD
       local keymap = vim.keymap -- for conciseness
+=======
+      local keymap = vim
+          .keymap                                                                                                         -- for conciseness
+>>>>>>> af7adfc2003f4b20a2342e213d75cfca8a91f9cd
 
       keymap.set('n', '<leader>ee', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle file explorer' }) -- toggle file explorer
       keymap.set('n', '<leader>ef', '<cmd>NvimTreeFindFileToggle<CR>', { desc = 'Toggle file explorer on current file' }) -- toggle file explorer on current file
@@ -1153,6 +1168,25 @@ require('lazy').setup {
     config = function()
       vim.keymap.set('n', '<leader>gs', '<cmd>Git<CR>', { desc = 'Open git status' })
     end,
+  },
+
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    branch = 'canary',
+    dependencies = {
+      { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
+      { 'nvim-lua/plenary.nvim' },  -- for curl, log wrapper
+    },
+    opts = {
+      debug = true, -- Enable debugging
+      -- See Configuration section for rest
+    },
+    -- See Commands section for default commands if you want to lazy load on them
+  },
+
+  {
+    "github/copilot.vim",
+    lazy = false,
   },
 
   ui = {
